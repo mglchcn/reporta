@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reportá una norma | Bolivia</title>
+  <title>Reporta tu tranca | Bolivia</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <style>
-    /* Variables de Color Corporativo (Dorados) */
+    /* Variables de Color Corporativo */
     :root {
-      --gold-primary: #C5A059;     /* Dorado principal */
-      --gold-dark: #8C713B;        /* Dorado oscuro (para hover o texto) */
-      --gold-light: #F4F0E6;       /* Dorado muy claro (fondos) */
-      --gold-border: #D8C397;      /* Dorado para bordes sutiles */
-      --text-main: #2C3E50;        /* Texto principal oscuro y elegante */
-      --text-muted: #596A7A;       /* Texto secundario */
-      --bg-body: #FAFAFA;          /* Fondo general más limpio */
+      --gold-primary: #C5A059;
+      --gold-dark: #8C713B;
+      --gold-light: #F4F0E6;
+      --gold-border: #D8C397;
+      --text-main: #2C3E50;
+      --text-muted: #6c757d;
+      --bg-body: #F8F9FA;
     }
 
     body { 
@@ -33,108 +34,145 @@
       background-color: #ffffff;
       padding: 15px 0;
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       border-bottom: 1px solid var(--gold-border);
     }
     
     .header-logos img {
-      max-height: 75px; 
+      max-height: 70px; 
       object-fit: contain;
-      transition: transform 0.3s ease;
-    }
-
-    .header-logos img:hover {
-      transform: scale(1.02);
     }
 
     .form-container { 
       background: #ffffff; 
-      padding: 45px 50px; 
+      padding: 40px; 
       border-radius: 12px; 
       box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
       border: 1px solid rgba(197, 160, 89, 0.2);
       margin-bottom: 50px; 
     }
 
-    .main-title { color: var(--gold-dark); letter-spacing: 0.5px; }
-    .subtitle { color: var(--text-muted); }
-
-    .seccion-titulo { 
-      font-size: 1.25rem;
+    /* Barra de Progreso */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #E0E4E8;
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    .step-indicator {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #E0E4E8;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    .step-indicator.active {
+      background: var(--gold-primary);
+      color: white;
+      box-shadow: 0 0 0 5px var(--gold-light);
+    }
+    .step-label {
+      position: absolute;
+      top: 50px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .step-indicator.active .step-label {
+      color: var(--gold-dark);
       font-weight: 600;
-      color: var(--text-main);
-      border-bottom: 2px solid var(--gold-primary); 
-      padding-bottom: 8px; 
-      margin-top: 2.5rem; 
-      margin-bottom: 1.5rem; 
-      display: inline-block;
     }
 
-    .form-label { font-weight: 500; color: var(--text-main); font-size: 0.95rem; }
+    /* Secciones del Formulario */
+    .step-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    .step-content.active { display: block; }
     
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-title { color: var(--gold-dark); font-weight: 800; }
+    .form-label { font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem;}
+    
+    .form-text {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     .form-control, .form-select {
       border-radius: 8px;
-      padding: 0.7rem 1rem;
-      border: 1px solid #E0E4E8;
-      background-color: #FDFDFD;
-      transition: all 0.3s ease;
-      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border: 1px solid #ced4da;
+      background-color: #fcfcfc;
     }
-
     .form-control:focus, .form-select:focus {
       border-color: var(--gold-primary);
-      background-color: #ffffff;
       box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15);
+      background-color: #fff;
     }
-    
-    .form-control::placeholder { color: #AAB7C4; }
 
-    .form-check-input:checked {
+    /* Selector de Norma o Trámite (Estilo Botones Radio) */
+    .btn-check:checked + .btn-outline-gold {
       background-color: var(--gold-primary);
+      color: white !important;
       border-color: var(--gold-primary);
     }
-
-    .form-check-input:focus {
-      box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.25);
+    .btn-outline-gold {
+      color: var(--gold-dark);
       border-color: var(--gold-primary);
+      font-weight: 600;
+      padding: 12px;
+    }
+    .btn-outline-gold:hover {
+      background-color: var(--gold-light);
+      color: var(--gold-dark);
     }
 
-    .bg-light {
-      background-color: var(--gold-light) !important;
-      border-color: var(--gold-border) !important;
-    }
-
-    .btn-primary {
+    .btn-gold {
       background-color: var(--gold-primary);
-      border: none;
+      color: white;
+      font-weight: 600;
       border-radius: 8px;
-      padding: 14px;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-      color: white;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      font-weight: 700 !important;
+      padding: 10px 20px;
+      transition: all 0.2s;
     }
+    .btn-gold:hover { background-color: var(--gold-dark); color: white; }
+    .btn-outline-secondary { border-radius: 8px; padding: 10px 20px; }
 
-    .btn-primary:hover, .btn-primary:focus {
-      background-color: var(--gold-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3);
-      color: white;
-    }
-
-    .btn-primary:active { transform: translateY(0); }
     .empresa-fields { display: none; }
-    .text-danger { color: #D9534F !important; font-weight: bold; }
-    .bg-success { background-color: #28a745 !important; }
-    .bg-danger { background-color: #dc3545 !important; }
+    .text-danger { color: #D9534F !important; }
 
     @media (max-width: 768px) {
-      .form-container { padding: 30px 20px; }
-      .header-logos { padding: 10px 0; }
-      .header-logos img { max-height: 55px; margin-bottom: 10px; }
-      .header-logos .container { flex-direction: column; text-align: center; justify-content: center !important; }
+      .form-container { padding: 25px 15px; }
+      .step-label { display: none; }
     }
   </style>
 </head>
@@ -151,178 +189,213 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-lg-9 col-md-10 form-container">
+    <div class="col-lg-8 col-md-10 form-container mt-2">
       
       <div class="text-center mb-5">
-        <h2 class="fw-bold main-title mb-3">REPORTA TU TRANCA</h2>
-        <p class="subtitle fs-5">Indícanos qué norma es un obstáculo para el libre comercio y la competencia en Bolivia.</p>
+        <h2 class="main-title mb-2">REPORTA TU TRANCA</h2>
+        <p class="text-muted">Ayúdanos a identificar trámites o normas que obstaculizan.</p>
+      </div>
+
+      <div class="stepper mb-5 px-3">
+        <div class="step-indicator active" id="indicator-1">1<span class="step-label">Tus Datos</span></div>
+        <div class="step-indicator" id="indicator-2">2<span class="step-label">El Problema</span></div>
+        <div class="step-indicator" id="indicator-3">3<span class="step-label">Propuesta</span></div>
       </div>
       
       <form id="reportForm">
         
-        <h4 class="seccion-titulo">Datos Personales</h4>
-        <div class="row mb-3">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <label class="form-label">Nombre <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="nombre" placeholder="Ej. María" required>
+        <div class="step-content active" id="step-1">
+          <h4 class="mb-4 text-dark border-bottom pb-2 border-warning">Paso 1: Identificación</h4>
+          
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label class="form-label">Nombre(s) <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="nombre" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido(s) <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="apellido" required>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label">Apellido <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="apellido" placeholder="Ej. Pérez" required>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" name="correo" placeholder="ejemplo@correo.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Cédula de Identidad (CI) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" name="ci" placeholder="Sin extensión" required>
+            </div>
+          </div>
+
+          <div class="p-3 bg-light rounded mb-4 border">
+            <label class="form-label d-block mb-2">¿Quieres publicar tu nombre junto con la propuesta? <span class="text-danger">*</span></label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="publicar_nombre" value="Si" id="pubSi" required>
+              <label class="form-check-label" for="pubSi">Sí, acepto</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="publicar_nombre" value="No" id="pubNo">
+              <label class="form-check-label" for="pubNo">No, mantener anónimo</label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label d-block mb-2">¿Nos escribes en representación de una empresa o institución? <span class="text-danger">*</span></label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="es_empresa" value="Si" id="empresaSi" required>
+              <label class="form-check-label" for="empresaSi">Sí</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="es_empresa" value="No" id="empresaNo">
+              <label class="form-check-label" for="empresaNo">No, a título personal</label>
+            </div>
+          </div>
+
+          <div class="empresa-fields row mb-4 p-3 bg-light rounded border mt-2" id="camposEmpresa">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label class="form-label">Razón social de la empresa</label>
+              <input type="text" class="form-control" name="razon_social">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">NIT</label>
+              <input type="number" class="form-control" name="nit">
+            </div>
+          </div>
+
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-gold px-4" onclick="nextStep(2)">Siguiente <i class="bi bi-arrow-right"></i></button>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <label class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" name="correo" placeholder="correo@ejemplo.com" required>
+        <div class="step-content" id="step-2">
+          <h4 class="mb-4 text-dark border-bottom pb-2 border-warning">Paso 2: ¿Qué deseas reportar?</h4>
+          
+          <div class="mb-4">
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="tipo_reporte" id="repNorma" value="Norma" autocomplete="off" checked>
+              <label class="btn btn-outline-gold" for="repNorma"><i class="bi bi-file-earmark-text"></i> Una Norma / Ley</label>
+
+              <input type="radio" class="btn-check" name="tipo_reporte" id="repTramite" value="Tramite" autocomplete="off">
+              <label class="btn btn-outline-gold" for="repTramite"><i class="bi bi-folder2-open"></i> Un Trámite / Requisito</label>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label">Cédula de Identidad (CI) <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" name="ci" placeholder="Solo números" required>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label class="form-label">Departamento <span class="text-danger">*</span></label>
+              <select class="form-select" name="departamento" required>
+                <option value="" selected disabled>Seleccionar...</option>
+                <option value="Nacional">Nivel Nacional (Aplica a todo el país)</option>
+                <option value="La Paz">La Paz</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Cochabamba">Cochabamba</option>
+                <option value="Oruro">Oruro</option>
+                <option value="Potosí">Potosí</option>
+                <option value="Chuquisaca">Chuquisaca</option>
+                <option value="Tarija">Tarija</option>
+                <option value="Beni">Beni</option>
+                <option value="Pando">Pando</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Municipio <span class="text-muted fw-normal">(Opcional)</span></label>
+              <input type="text" class="form-control" name="municipio" placeholder="Ej. El Alto (Si aplica)">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Institución responsable <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="organismo" placeholder="Ej. Impuestos Nacionales, SENASAG, Alcaldía..." required>
+          </div>
+
+          <div id="seccionTramite" style="display: none;" class="p-3 bg-light border rounded mb-4">
+            <label class="form-label">Nombre del trámite o procedimiento <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="inputTramite" name="nombre_tramite" placeholder="Ej. Obtención de Licencia de Funcionamiento">
+          </div>
+
+          <div id="seccionNorma" class="p-3 bg-light border rounded mb-4">
+            <div class="row mb-3">
+              <div class="col-md-5 mb-3 mb-md-0">
+                <label class="form-label">Tipo de Norma <span class="text-danger">*</span></label>
+                <select class="form-select" id="inputTipoNorma" name="tipo_norma" required>
+                  <option value="" selected disabled>Seleccionar...</option>
+                  <option value="Ley">Ley Nacional</option>
+                  <option value="Ley Autonomica">Ley Autonómica</option>
+                  <option value="Decreto Supremo">Decreto Supremo</option>
+                  <option value="Decreto Departamental">Decreto Departamental</option>
+                  <option value="Resolucion Ministerial">Resolución Ministerial</option>
+                  <option value="Resolucion Administrativa">Resolución Administrativa</option>
+                  <option value="Ordenanza Municipal">Ordenanza Municipal</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3 mb-md-0">
+                <label class="form-label">Número <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="inputNumNorma" name="num_norma" placeholder="Ej. 843" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Año <span class="text-muted fw-normal">(Opcional)</span></label>
+                <input type="number" class="form-control" name="anio_norma" placeholder="Ej. 2023">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-outline-secondary" onclick="prevStep(1)"><i class="bi bi-arrow-left"></i> Volver</button>
+            <button type="button" class="btn btn-gold px-4" onclick="nextStep(3)">Siguiente <i class="bi bi-arrow-right"></i></button>
           </div>
         </div>
 
-        <div class="mb-4 mt-4 p-4 bg-light border rounded">
-          <label class="form-label mb-3 d-block">¿Quieres publicar tu nombre junto con la propuesta? <span class="text-danger">*</span></label>
-          <div class="form-check form-check-inline me-4">
-            <input class="form-check-input" type="radio" name="publicar_nombre" value="Si" id="pubSi" required>
-            <label class="form-check-label" for="pubSi">Sí, acepto</label>
+        <div class="step-content" id="step-3">
+          <h4 class="mb-4 text-dark border-bottom pb-2 border-warning">Paso 3: Justificación y Solución</h4>
+          
+          <div class="mb-4">
+            <label class="form-label">Título de tu reporte <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="titulo" placeholder="Ej. Exceso de requisitos notariales" required>
           </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="publicar_nombre" value="No" id="pubNo">
-            <label class="form-check-label" for="pubNo">No, prefiero anonimato</label>
+
+          <div class="mb-4">
+            <label class="form-label">¿Por qué es un obstáculo? (Problema) <span class="text-danger">*</span></label>
+            <textarea class="form-control" name="desarrollo" rows="4" placeholder="Cuéntanos tu experiencia. ¿Cuánto tiempo o dinero te hace perder? ¿Por qué consideras que es innecesario?" required></textarea>
+          </div>
+
+          <div class="p-3 bg-light rounded mb-4 border">
+            <label class="form-label d-block mb-3">¿Cuál es el cambio que sugieres? <span class="text-danger">*</span></label>
+            <div class="form-check form-check-inline mb-2">
+              <input class="form-check-input" type="radio" name="cambio_propuesto" value="Eliminar" id="camEli" required>
+              <label class="form-check-label" for="camEli">Eliminarlo / Derogarlo por completo</label>
+            </div><br>
+            <div class="form-check form-check-inline mb-2">
+              <input class="form-check-input" type="radio" name="cambio_propuesto" value="Simplificar" id="camSim">
+              <label class="form-check-label" for="camSim">Simplificarlo / Reducir requisitos</label>
+            </div><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="cambio_propuesto" value="Digitalizar" id="camDig">
+              <label class="form-check-label" for="camDig">Digitalizarlo / Automatizarlo</label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Propuesta de solución técnica <span class="text-muted fw-normal">(Opcional)</span></label>
+            <textarea class="form-control" name="propuesta_solucion" rows="3" placeholder="Si tienes una idea clara de cómo redactar la norma o diseñar el proceso, escríbela aquí..."></textarea>
+          </div>
+
+          <div id="statusMessage" class="mb-3 p-3 rounded text-center fw-bold shadow-sm" style="display: none;"></div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)"><i class="bi bi-arrow-left"></i> Volver</button>
+            <button type="submit" class="btn btn-success px-4 fw-bold" id="btnSubmit" style="background-color: #007A33; border-color: #007A33;"><i class="bi bi-send"></i> Enviar Reporte</button>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label d-block mb-3">¿Nos escribes en nombre de una empresa u organización? <span class="text-danger">*</span></label>
-          <div class="form-check form-check-inline me-4">
-            <input class="form-check-input" type="radio" name="es_empresa" value="Si" id="empresaSi" required>
-            <label class="form-check-label" for="empresaSi">Sí</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="es_empresa" value="No" id="empresaNo">
-            <label class="form-check-label" for="empresaNo">No</label>
-          </div>
-        </div>
-
-        <div class="empresa-fields row mb-3 p-4 bg-light border rounded mt-3" id="camposEmpresa">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <label class="form-label">Razón social</label>
-            <input type="text" class="form-control" name="razon_social" placeholder="Nombre de la empresa">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">NIT (Sólo números)</label>
-            <input type="number" class="form-control" name="nit" placeholder="Ej. 1029384029">
-          </div>
-        </div>
-
-        <h4 class="seccion-titulo">Normativa que propones cambiar</h4>
-        <div class="mb-4">
-          <label class="form-label d-block mb-3">Carácter de la norma <span class="text-danger">*</span></label>
-          <div class="form-check form-check-inline me-4">
-            <input class="form-check-input" type="radio" name="caracter" value="Nacional" id="carNac" required>
-            <label class="form-check-label" for="carNac">Nacional</label>
-          </div>
-          <div class="form-check form-check-inline me-4">
-            <input class="form-check-input" type="radio" name="caracter" value="Departamental" id="carDep">
-            <label class="form-check-label" for="carDep">Departamental</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="caracter" value="Municipal" id="carMun">
-            <label class="form-check-label" for="carMun">Municipal</label>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <label class="form-label">Departamento <span class="text-danger">*</span></label>
-            <select class="form-select" name="departamento" required>
-              <option value="" selected disabled>Seleccionar...</option>
-              <option value="La Paz">La Paz</option>
-              <option value="Santa Cruz">Santa Cruz</option>
-              <option value="Cochabamba">Cochabamba</option>
-              <option value="Oruro">Oruro</option>
-              <option value="Potosí">Potosí</option>
-              <option value="Chuquisaca">Chuquisaca</option>
-              <option value="Tarija">Tarija</option>
-              <option value="Beni">Beni</option>
-              <option value="Pando">Pando</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Municipio <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="municipio" placeholder="Ej. El Alto" required>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-4 mb-3 mb-md-0">
-            <label class="form-label">Tipo de Norma <span class="text-danger">*</span></label>
-            <select class="form-select" name="tipo_norma" required>
-              <option value="" selected disabled>Seleccionar...</option>
-              <option value="Ley">Ley Nacional</option>
-              <option value="Ley Autonomica">Ley Autonómica</option>
-              <option value="Decreto Supremo">Decreto Supremo</option>
-              <option value="Decreto Departamental">Decreto Departamental</option>
-              <option value="Resolucion Ministerial">Resolución Ministerial</option>
-              <option value="Resolucion Administrativa">Resolución Administrativa</option>
-              <option value="Ordenanza Municipal">Ordenanza Municipal</option>
-            </select>
-          </div>
-          <div class="col-md-4 mb-3 mb-md-0">
-            <label class="form-label">Número <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="num_norma" placeholder="Ej. 843" required>
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Año <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" name="anio_norma" placeholder="Ej. 2023" required>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label">Organismo o Institución que dictó la norma <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="organismo" placeholder="Ej. Ministerio de Economía y Finanzas Públicas" required>
-        </div>
-
-        <h4 class="seccion-titulo">Justificación y Propuesta</h4>
-        <div class="mb-3">
-          <label class="form-label">Título del reporte <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="titulo" placeholder="Breve resumen del problema" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Desarrollo (Por qué es un obstáculo) <span class="text-danger">*</span></label>
-          <textarea class="form-control" name="desarrollo" rows="5" placeholder="Explica detalladamente cómo esta norma afecta la actividad económica..." required></textarea>
-        </div>
-
-        <div class="mb-4 mt-4 p-4 bg-light border rounded">
-          <label class="form-label d-block mb-3">¿Cuál es el cambio propuesto? <span class="text-danger">*</span></label>
-          <div class="form-check form-check-inline me-4">
-            <input class="form-check-input" type="radio" name="cambio_propuesto" value="Derogarla" id="camDerog" required>
-            <label class="form-check-label" for="camDerog">Derogarla (Eliminarla)</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="cambio_propuesto" value="Modificarla" id="camMod">
-            <label class="form-check-label" for="camMod">Modificarla</label>
-          </div>
-        </div>
-
-        <div class="mb-5">
-          <label class="form-label">Propuesta de solución técnica (Opcional)</label>
-          <textarea class="form-control" name="propuesta_solucion" rows="4" placeholder="Si tienes una propuesta de redacción o solución alternativa, escríbela aquí..."></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100" id="btnSubmit">Enviar Reporte Institucional</button>
-        
-        <div id="statusMessage" class="mt-4 p-3 rounded text-center fw-bold shadow-sm" style="display: none;"></div>
       </form>
     </div>
   </div>
 </div>
 
 <script>
+  // LÓGICA DE EMPRESA
   const empresaSi = document.getElementById('empresaSi');
   const empresaNo = document.getElementById('empresaNo');
   const camposEmpresa = document.getElementById('camposEmpresa');
@@ -330,18 +403,87 @@
   empresaSi.addEventListener('change', () => { camposEmpresa.style.display = 'flex'; });
   empresaNo.addEventListener('change', () => { camposEmpresa.style.display = 'none'; });
 
+  // LÓGICA: NORMA O TRÁMITE
+  const repNorma = document.getElementById('repNorma');
+  const repTramite = document.getElementById('repTramite');
+  const seccionNorma = document.getElementById('seccionNorma');
+  const seccionTramite = document.getElementById('seccionTramite');
+  
+  const inputTramite = document.getElementById('inputTramite');
+  const inputTipoNorma = document.getElementById('inputTipoNorma');
+  const inputNumNorma = document.getElementById('inputNumNorma');
+
+  repNorma.addEventListener('change', () => {
+    seccionNorma.style.display = 'block';
+    seccionTramite.style.display = 'none';
+    // Habilitar obligatorios de Norma, quitar de Trámite
+    inputTipoNorma.setAttribute('required', 'required');
+    inputNumNorma.setAttribute('required', 'required');
+    inputTramite.removeAttribute('required');
+  });
+
+  repTramite.addEventListener('change', () => {
+    seccionNorma.style.display = 'none';
+    seccionTramite.style.display = 'block';
+    // Habilitar obligatorios de Trámite, quitar de Norma
+    inputTramite.setAttribute('required', 'required');
+    inputTipoNorma.removeAttribute('required');
+    inputNumNorma.removeAttribute('required');
+  });
+
+  // LÓGICA DE PASOS (MULTIPAGE)
+  function showStep(stepIndex) {
+    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+    document.getElementById('step-' + stepIndex).classList.add('active');
+    
+    for (let i = 1; i <= 3; i++) {
+      let indicator = document.getElementById('indicator-' + i);
+      if (i <= stepIndex) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    }
+  }
+
+  function nextStep(stepIndex) {
+    const currentStepDiv = document.querySelector('.step-content.active');
+    // Busca los inputs requeridos, ignorando los que están ocultos por display:none (como los de empresa o norma/trámite)
+    const inputs = currentStepDiv.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+    
+    for(let input of inputs) {
+      // Solo validamos si el elemento (o su padre) es visible
+      if (input.offsetParent !== null && !input.checkValidity()) {
+        input.reportValidity();
+        isValid = false;
+        break; // Detiene el bucle en el primer error
+      }
+    }
+
+    if (isValid) {
+      showStep(stepIndex);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function prevStep(stepIndex) {
+    showStep(stepIndex);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ENVÍO DE DATOS A GOOGLE SHEETS
   const form = document.getElementById('reportForm');
   const btnSubmit = document.getElementById('btnSubmit');
   const statusMessage = document.getElementById('statusMessage');
 
-  // EL NUEVO ENLACE CON TU IMPLEMENTACIÓN
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcifY93kL26XKJOvvf84c7vrjyj5widVR5JgGy4W_oBQAKqQk2gPah5OHVIB-yxPvQRA/exec';
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     
     btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Enviando datos...';
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Enviando...';
     statusMessage.style.display = 'none';
 
     const formData = new FormData(form);
@@ -350,32 +492,44 @@
       dataToSend.append(pair[0], pair[1]);
     }
 
-    // EL SOLUCIONADOR MÁGICO DE CORS: mode: 'no-cors'
     fetch(SCRIPT_URL, { 
       method: 'POST', 
-      mode: 'no-cors', // ESTA LÍNEA EVITA EL BLOQUEO DEL NAVEGADOR
+      mode: 'no-cors', 
       body: dataToSend,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
     .then(() => {
-      // Como usamos no-cors, no podemos leer la respuesta, pero sabemos que la red no falló
       statusMessage.style.display = 'block';
-      statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-success text-white';
-      statusMessage.innerText = '¡Su reporte ha sido enviado exitosamente!';
+      statusMessage.className = 'mb-4 p-3 rounded text-center fw-bold shadow-sm bg-success text-white';
+      statusMessage.innerHTML = '<i class="bi bi-check-circle"></i> ¡Reporte enviado exitosamente! Gracias por tu aporte.';
+      
       form.reset();
-      camposEmpresa.style.display = 'none'; 
+      camposEmpresa.style.display = 'none';
+      // Reiniciar selectores de norma
+      seccionNorma.style.display = 'block';
+      seccionTramite.style.display = 'none';
+      inputTipoNorma.setAttribute('required', 'required');
+      inputNumNorma.setAttribute('required', 'required');
+      inputTramite.removeAttribute('required');
+      
       btnSubmit.disabled = false;
-      btnSubmit.innerText = 'Enviar Reporte Institucional';
+      btnSubmit.innerHTML = '<i class="bi bi-send"></i> Enviar Reporte';
+      
+      // Regresar al inicio tras unos segundos
+      setTimeout(() => {
+        showStep(1);
+        statusMessage.style.display = 'none';
+      }, 4000);
     })
     .catch(error => {
       console.error('Error!', error);
       statusMessage.style.display = 'block';
-      statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-danger text-white';
-      statusMessage.innerText = 'Hubo un error de conexión al enviar. Intente nuevamente.';
+      statusMessage.className = 'mb-4 p-3 rounded text-center fw-bold shadow-sm bg-danger text-white';
+      statusMessage.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Hubo un error de conexión. Intente nuevamente.';
       btnSubmit.disabled = false;
-      btnSubmit.innerText = 'Enviar Reporte Institucional';
+      btnSubmit.innerHTML = '<i class="bi bi-send"></i> Enviar Reporte';
     });
   });
 </script>
