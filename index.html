@@ -38,7 +38,7 @@
     }
     
     .header-logos img {
-      max-height: 75px; /* Altura optimizada para los logos institucionales */
+      max-height: 75px; 
       object-fit: contain;
       transition: transform 0.3s ease;
     }
@@ -130,7 +130,6 @@
     .bg-success { background-color: #28a745 !important; }
     .bg-danger { background-color: #dc3545 !important; }
 
-    /* Responsividad ajustada para móviles */
     @media (max-width: 768px) {
       .form-container { padding: 30px 20px; }
       .header-logos { padding: 10px 0; }
@@ -156,7 +155,7 @@
       
       <div class="text-center mb-5">
         <h2 class="fw-bold main-title mb-3">REPORTA TU TRANCA</h2>
-        <p class="subtitle fs-5">Indícanos qué norma o trámite es un obstáculo.</p>
+        <p class="subtitle fs-5">Indícanos qué norma es un obstáculo para el libre comercio y la competencia en Bolivia.</p>
       </div>
       
       <form id="reportForm">
@@ -324,7 +323,6 @@
 </div>
 
 <script>
-  // Mostrar/ocultar los campos de empresa dinámicamente
   const empresaSi = document.getElementById('empresaSi');
   const empresaNo = document.getElementById('empresaNo');
   const camposEmpresa = document.getElementById('camposEmpresa');
@@ -332,38 +330,37 @@
   empresaSi.addEventListener('change', () => { camposEmpresa.style.display = 'flex'; });
   empresaNo.addEventListener('change', () => { camposEmpresa.style.display = 'none'; });
 
-  // CONEXIÓN MEJORADA CON GOOGLE SHEETS
   const form = document.getElementById('reportForm');
   const btnSubmit = document.getElementById('btnSubmit');
   const statusMessage = document.getElementById('statusMessage');
 
-  // URL del script de Google correctamente definida
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwW32p8JJ_fEk8tHUp3RmpRkAeJB3DHtukbj8LfMiwRxjdd2_DdOQqjR1ttYKAu9xebmw/exec';
+  // EL NUEVO ENLACE CON TU IMPLEMENTACIÓN
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcifY93kL26XKJOvvf84c7vrjyj5widVR5JgGy4W_oBQAKqQk2gPah5OHVIB-yxPvQRA/exec';
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     
-    // Cambiar estado a "cargando"
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Enviando datos...';
     statusMessage.style.display = 'none';
 
-    // MEJORA: Convertir FormData a URLSearchParams para evitar errores CORS en Google Apps Script
     const formData = new FormData(form);
     const dataToSend = new URLSearchParams();
     for (const pair of formData) {
       dataToSend.append(pair[0], pair[1]);
     }
 
+    // EL SOLUCIONADOR MÁGICO DE CORS: mode: 'no-cors'
     fetch(SCRIPT_URL, { 
       method: 'POST', 
+      mode: 'no-cors', // ESTA LÍNEA EVITA EL BLOQUEO DEL NAVEGADOR
       body: dataToSend,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
-    .then(response => {
-      // Incluso si la respuesta de Google arroja un "opaque response", asumimos éxito si no lanza error de red
+    .then(() => {
+      // Como usamos no-cors, no podemos leer la respuesta, pero sabemos que la red no falló
       statusMessage.style.display = 'block';
       statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-success text-white';
       statusMessage.innerText = '¡Su reporte ha sido enviado exitosamente!';
@@ -373,7 +370,7 @@
       btnSubmit.innerText = 'Enviar Reporte Institucional';
     })
     .catch(error => {
-      console.error('Error!', error.message);
+      console.error('Error!', error);
       statusMessage.style.display = 'block';
       statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-danger text-white';
       statusMessage.innerText = 'Hubo un error de conexión al enviar. Intente nuevamente.';
