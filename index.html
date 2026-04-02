@@ -17,21 +17,18 @@
       --bg-body: #FAFAFA;          /* Fondo general más limpio */
     }
 
-    /* Estilos Generales y Tipografía */
     body { 
       background-color: var(--bg-body); 
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
       color: var(--text-main);
     }
 
-    /* Barra Tricolor Boliviana */
     .tricolor-bar {
       height: 6px;
       width: 100%;
       background: linear-gradient(90deg, #D52B1E 33.33%, #F9E000 33.33%, #F9E000 66.66%, #007A33 66.66%);
     }
 
-    /* Cabecera de Logos */
     .header-logos {
       background-color: #ffffff;
       padding: 15px 0;
@@ -41,11 +38,15 @@
     }
     
     .header-logos img {
-      max-height: 65px;
+      max-height: 75px; /* Altura optimizada para los logos institucionales */
       object-fit: contain;
+      transition: transform 0.3s ease;
     }
 
-    /* Contenedor del Formulario */
+    .header-logos img:hover {
+      transform: scale(1.02);
+    }
+
     .form-container { 
       background: #ffffff; 
       padding: 45px 50px; 
@@ -55,17 +56,9 @@
       margin-bottom: 50px; 
     }
 
-    /* Títulos Generales */
-    .main-title {
-      color: var(--gold-dark);
-      letter-spacing: 0.5px;
-    }
-    
-    .subtitle {
-      color: var(--text-muted);
-    }
+    .main-title { color: var(--gold-dark); letter-spacing: 0.5px; }
+    .subtitle { color: var(--text-muted); }
 
-    /* Títulos de Sección */
     .seccion-titulo { 
       font-size: 1.25rem;
       font-weight: 600;
@@ -74,15 +67,10 @@
       padding-bottom: 8px; 
       margin-top: 2.5rem; 
       margin-bottom: 1.5rem; 
-      display: inline-block; /* Para que el borde dorado solo ocupe el texto */
+      display: inline-block;
     }
 
-    /* Estilos de Inputs */
-    .form-label {
-      font-weight: 500;
-      color: var(--text-main);
-      font-size: 0.95rem;
-    }
+    .form-label { font-weight: 500; color: var(--text-main); font-size: 0.95rem; }
     
     .form-control, .form-select {
       border-radius: 8px;
@@ -99,11 +87,8 @@
       box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15);
     }
     
-    .form-control::placeholder {
-      color: #AAB7C4;
-    }
+    .form-control::placeholder { color: #AAB7C4; }
 
-    /* Checkboxes y Radios */
     .form-check-input:checked {
       background-color: var(--gold-primary);
       border-color: var(--gold-primary);
@@ -114,13 +99,11 @@
       border-color: var(--gold-primary);
     }
 
-    /* Contenedores resaltados (Cajas grises claras) */
     .bg-light {
       background-color: var(--gold-light) !important;
       border-color: var(--gold-border) !important;
     }
 
-    /* Botón de Envío */
     .btn-primary {
       background-color: var(--gold-primary);
       border: none;
@@ -141,22 +124,18 @@
       color: white;
     }
 
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    /* Clases de utilidad */
+    .btn-primary:active { transform: translateY(0); }
     .empresa-fields { display: none; }
     .text-danger { color: #D9534F !important; font-weight: bold; }
-    
-    /* Mensajes de estado */
     .bg-success { background-color: #28a745 !important; }
     .bg-danger { background-color: #dc3545 !important; }
 
-    /* Responsividad */
+    /* Responsividad ajustada para móviles */
     @media (max-width: 768px) {
       .form-container { padding: 30px 20px; }
-      .header-logos img { max-height: 50px; }
+      .header-logos { padding: 10px 0; }
+      .header-logos img { max-height: 55px; margin-bottom: 10px; }
+      .header-logos .container { flex-direction: column; text-align: center; justify-content: center !important; }
     }
   </style>
 </head>
@@ -165,9 +144,9 @@
 <div class="tricolor-bar"></div>
 
 <header class="header-logos">
-  <div class="container d-flex justify-content-between align-items-center">
-    <img src="logovcgp.png" alt="Min Presidencia">
-    <img src="trancacero.png" alt="Tranca Cero">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <img src="logovcgp.png" alt="Ministerio de la Presidencia" class="img-fluid">
+    <img src="trancacero.png" alt="Programa Tranca Cero" class="img-fluid">
   </div>
 </header>
 
@@ -353,41 +332,54 @@
   empresaSi.addEventListener('change', () => { camposEmpresa.style.display = 'flex'; });
   empresaNo.addEventListener('change', () => { camposEmpresa.style.display = 'none'; });
 
-  // Envío de datos a Google Sheets
+  // CONEXIÓN MEJORADA CON GOOGLE SHEETS
   const form = document.getElementById('reportForm');
   const btnSubmit = document.getElementById('btnSubmit');
   const statusMessage = document.getElementById('statusMessage');
 
+  // URL del script de Google correctamente definida
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwW32p8JJ_fEk8tHUp3RmpRkAeJB3DHtukbj8LfMiwRxjdd2_DdOQqjR1ttYKAu9xebmw/exec';
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     
-    // UI Loading state
+    // Cambiar estado a "cargando"
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Enviando datos...';
     statusMessage.style.display = 'none';
 
-    let requestBody = new FormData(form);
+    // MEJORA: Convertir FormData a URLSearchParams para evitar errores CORS en Google Apps Script
+    const formData = new FormData(form);
+    const dataToSend = new URLSearchParams();
+    for (const pair of formData) {
+      dataToSend.append(pair[0], pair[1]);
+    }
 
-    fetch(SCRIPT_URL, { method: 'POST', body: requestBody })
-      .then(response => {
-        statusMessage.style.display = 'block';
-        statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-success text-white';
-        statusMessage.innerText = '¡Su reporte ha sido enviado exitosamente!';
-        form.reset();
-        camposEmpresa.style.display = 'none'; 
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = 'Enviar Reporte Institucional';
-      })
-      .catch(error => {
-        console.error('Error!', error.message);
-        statusMessage.style.display = 'block';
-        statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-danger text-white';
-        statusMessage.innerText = 'Hubo un error de conexión al enviar. Intente nuevamente.';
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = 'Enviar Reporte Institucional';
-      });
+    fetch(SCRIPT_URL, { 
+      method: 'POST', 
+      body: dataToSend,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    .then(response => {
+      // Incluso si la respuesta de Google arroja un "opaque response", asumimos éxito si no lanza error de red
+      statusMessage.style.display = 'block';
+      statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-success text-white';
+      statusMessage.innerText = '¡Su reporte ha sido enviado exitosamente!';
+      form.reset();
+      camposEmpresa.style.display = 'none'; 
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = 'Enviar Reporte Institucional';
+    })
+    .catch(error => {
+      console.error('Error!', error.message);
+      statusMessage.style.display = 'block';
+      statusMessage.className = 'mt-4 p-3 rounded text-center fw-bold shadow-sm bg-danger text-white';
+      statusMessage.innerText = 'Hubo un error de conexión al enviar. Intente nuevamente.';
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = 'Enviar Reporte Institucional';
+    });
   });
 </script>
 
